@@ -1,0 +1,99 @@
+<!-- leaflet tutorial quick start: http://leafletjs.com/examples/quick-start/ -->
+
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>Quick Start - Leaflet</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+        <!--leaflet CSS file-->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+        <!-- leaflet JavaScript file -->
+        <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+    </head>
+
+    <body>
+
+        <div id="mapid" style="width: 1600px; height: 800px;"></div>
+        <script>
+         /* initialize the map and set its view to our chosen geographical coordinates and a zoom level
+          * setView call also return map object, here called mymap*/
+         var mymap = L.map('mapid').setView([49.97704, 9.15214], 13);
+
+         /* adding HSAF tiled raster data*/
+         /* L.tileLayer('/data/osus/geodata/HSAF/h08_20170215_102100_metopb_22898_ZAMG/{z}/{x}/{y}.png', {
+          *     minZoom: 1, // change these as needed
+          *     maxZoom: 18,
+          *     tms: true
+          * }).addTo(map);*/
+
+         /* adding tile layer to map from Mapbox Streets, using own template*/
+         L.tileLayer('https://api.mapbox.com/styles/v1/superpulu/cj03mr7wi007f2snyut6jwgto/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoic3VwZXJwdWx1IiwiYSI6ImNqMDNtb2E4ejA5aWcyd2xqOW9yeDBieDQifQ.E_q7dsch2AA2ihurFnw_Qw', {
+             /* L.tileLayer('https://api.mapbox.com/styles/v1/superpulu/cj03nwske007k2snym8p7bx2d/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoic3VwZXJwdWx1IiwiYSI6ImNqMDNtb2E4ejA5aWcyd2xqOW9yeDBieDQifQ.E_q7dsch2AA2ihurFnw_Qw', {*/
+             attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+             maxZoom: 18,
+             /* id: 'your.mapbox.project.id', */
+             accessToken: 'pk.eyJ1Ijoic3VwZXJwdWx1IiwiYSI6ImNqMDNtb2E4ejA5aWcyd2xqOW9yeDBieDQifQ.E_q7dsch2AA2ihurFnw_Qw'
+         }).addTo(mymap);
+
+         L.tileLayer('h08_20170215_102100_metopb_22898_ZAMG/{z}/{x}/{y}.png', {
+             minZoom: 0,
+             maxZoom: 6,
+             attribution: 'ESO/INAF-VST/OmegaCAM',
+             tms: true
+         }).addTo(mymap);
+
+         
+         /* adding a marker*/
+         var marker = L.marker([49.97704, 9.15214]).addTo(mymap);
+
+         /* adding circle*/
+         var circle = L.circle([49.97, 9.1522], {
+             color: 'red',
+             fillColor: '#f03',
+             fillOpacity: 0.5,
+             radius: 500
+         }).addTo(mymap);
+
+         /* adding a polygon*/
+         var polygon = L.polygon([
+             [49.97, 9.15],
+             [49.975, 9.16],
+             [49.968, 9.155]
+         ]).addTo(mymap);
+         /* adding popups to map markers
+          * bindPopup attaches a popup with specified HTML content to marker, so popup appears when you click on the object and openPopup method immediately opens attached popup*/
+         marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
+         circle.bindPopup("I am a circle.");
+         polygon.bindPopup("I am a polygon.");
+
+         /* popups as layers: uses openOn instead of addTo, because it handles automatic closing of a previously opened popup when opening a new one*/
+         var popup = L.popup()
+                      .setLatLng([49.97704, 9.15214])
+                      .setContent("I am a standalone popup.")
+                      .openOn(mymap);
+
+         /* dealing with events: reacting to user interactions, such as clicking a marker or zooming*/
+         function onMapClick(e) {
+             alert("You clicked the map at " + e.latlng);
+         }
+         mymap.on('click', onMapClick);
+
+         /* each object has own set of events (see documentation); first argument of listener function is an event object, which contains useful information about event that happened (e.g. latlng)*/
+         /* improving onMapClick function, by using popup instead of alert*/
+         var popup = L.popup();
+         function onMapClick(e) {
+             popup
+                 .setLatLng(e.latlng)
+                 .setContent("You clicked the map at " + e.latlng.toString())
+                 .openOn(mymap);
+         }
+         mymap.on('click', onMapClick);
+
+        </script>
+    </body>
+
+</html>

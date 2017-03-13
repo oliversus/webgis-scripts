@@ -1,0 +1,58 @@
+<!-- leaflet tutorial quick start: http://leafletjs.com/examples/quick-start/ -->
+
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>Mobile Tutorial - Leaflet</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+        <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+
+        <!--leaflet CSS file-->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+        <!-- leaflet JavaScript file -->
+        <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+        <style>
+         body{padding: 0; margin: 0;} html, body, #map{height: 100vh; width: 100vw;}
+        </style>
+    </head>
+
+    <body>
+        <!-- div element with id: this is where the map goes -->
+        <div id='map'></div>
+        <script>
+         var map = L.map('map').fitWorld();
+
+         L.tileLayer('https://api.mapbox.com/styles/v1/superpulu/cj03mr7wi007f2snyut6jwgto/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoic3VwZXJwdWx1IiwiYSI6ImNqMDNtb2E4ejA5aWcyd2xqOW9yeDBieDQifQ.E_q7dsch2AA2ihurFnw_Qw', {
+             attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+             maxZoom: 18
+         }).addTo(map);
+
+         /* adding geolocation and zooming to it: locate method with setView option*/
+         map.locate({setView: true, maxZoom: 16});
+
+         /* draw circle with radius = location accuracy and centre = estimated location*/
+         function onLocationFound(e) {
+             /* get radius of location accuracy*/
+             var radius = e.accuracy / 2;
+             /* add marker at location lat/lon to map*/
+             L.marker(e.latlng).addTo(map)
+              .bindPopup("You are within " + radius + " meters from this point").openPopup();
+             /* and draw a circle with radius = location accuracy at current location*/
+             L.circle(e.latlng, radius).addTo(map);
+         }
+         /* when location has been found*/
+         map.on('locationfound', onLocationFound);
+
+         /* show an error message if geolocation failed*/
+         function onLocationError(e) {
+             alert(e.message);
+         }
+         /* when location could not be determined*/
+         map.on('locationerror', onLocationError);
+
+        </script>
+    </body>
+</html>
